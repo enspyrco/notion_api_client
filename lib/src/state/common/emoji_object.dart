@@ -4,7 +4,7 @@ import 'file_or_emoji_object.dart';
 
 /// Emoji objects contain emoji data for page icons.
 /// Emoji objects are used to set the page icon to an emoji.
-class EmojiObject with FileOrEmojiObject {
+class EmojiObject implements FileOrEmojiObject {
   /// Type of page icon. Possible values are: "emoji".
   ///   Type: string (enum)
   @override
