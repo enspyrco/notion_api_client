@@ -1,16 +1,31 @@
 import 'package:api_client_utils/api_client_utils.dart';
 import 'package:notion_api_client/notion_api_client.dart';
+import 'package:notion_api_client/src/pageable.dart';
 
 import 'credentials.dart';
+
+const pageId = 'ba16e52f6bf04eb5927fda3a45c38d53';
 
 void main() async {
   var client = NotionClient(token: token);
 
-  // var page = await client.retrievePageProperties(id: 'e93dda7fa5ed4e28ba27e857cd1f6757');
-
   try {
-    var response = await client.getBlockChildren(
-        id: 'e93dda7fa5ed4e28ba27e857cd1f6757'); // f399da8641d8441da3de6a4fd7431567
+    PageableResponse? response = await client.getBlockChildren(id: pageId);
+
+    if (response == null) {
+      print('There was nothing returned!');
+      return;
+    }
+
+    // TODO: do something with the results
+    print(response.results);
+
+    while (response!.hasMore) {
+      print("There was more than one page of results.");
+      response = await client.getBlockChildren(
+          id: pageId, startCursor: response.nextCursor);
+      // TODO: do something with the results
+    }
   } on APIRequestException catch (error) {
     print(error.getJsonValue(key: 'message'));
   } finally {
