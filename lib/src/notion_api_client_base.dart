@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:notion_api_client/src/pageable.dart';
 import 'package:notion_api_client/src/state/pages/page_object.dart';
 
+import 'state/blocks/block_object.dart';
+
 class NotionClient {
   static const _host = 'api.notion.com';
   static const _basePath = 'v1';
@@ -22,9 +24,29 @@ class NotionClient {
     return PageObject.fromJson(json as JsonMap);
   }
 
-  Future<PageableResponse?> getBlockChildren({required String id}) async {
+  Future<PageableResponse?> getBlockChildren(
+      {required String id, bool recursive = false}) async {
     var json = await _requester.request('GET', 'blocks/$id/children');
     var response = PageableResponse.fromJson(json as JsonMap);
+
+    if (recursive) {
+      for (Object? object in response.results) {
+        if (object is BlockObject && object.hasChildren) {
+          final children = (object as dynamic).children as List<BlockObject?>;
+          if (children.isEmpty) {
+            PageableResponse? response =
+                await getBlockChildren(id: object.id, recursive: true);
+
+            if (response != null) {
+              final retrievedChildren =
+                  List<BlockObject>.from(response.results);
+              children.addAll(retrievedChildren);
+            }
+          }
+        }
+      }
+    }
+
     return response;
   }
 

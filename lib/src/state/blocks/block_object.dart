@@ -9,7 +9,8 @@ import '../users/user_object.dart';
 const constructorFrom = {
   'paragraph': ParagraphBlockObject.fromJson,
   'child_page': ChildPageBlockObject.fromJson,
-  'to_do': ToDoBlockObject.fromJson
+  'to_do': ToDoBlockObject.fromJson,
+  'toggle': ToggleBlockObject.fromJson
 };
 
 class BlockObject {
@@ -286,10 +287,10 @@ class ToggleBlockObject extends BlockObject {
   final List<BlockObject> children;
 
   ToggleBlockObject.fromJson(JsonMap json)
-      : richTexts = (json['rich_text'] as List)
+      : richTexts = (json['toggle']['rich_text'] as List)
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
-        color = json['color'] as String,
+        color = json['toggle']['color'] as String,
         children = (json['children'] == null)
             ? []
             : (json['children'] as List)

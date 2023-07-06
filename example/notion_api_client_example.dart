@@ -10,7 +10,8 @@ void main() async {
   var client = NotionClient(token: token);
 
   try {
-    PageableResponse? response = await client.getBlockChildren(id: pageId);
+    PageableResponse? response =
+        await client.getBlockChildren(id: pageId, recursive: true);
 
     if (response == null) {
       print('There was nothing returned!');
@@ -22,7 +23,7 @@ void main() async {
 
     while (response!.hasMore) {
       print("There was more than one page of results.");
-      response = await client.getBlockChildren(id: pageId);
+      response = await client.getBlockChildren(id: pageId, recursive: true);
       // TODO: do something with the results
     }
   } on APIRequestException catch (error) {
