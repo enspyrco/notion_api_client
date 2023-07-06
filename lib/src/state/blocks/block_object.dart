@@ -8,7 +8,8 @@ import '../users/user_object.dart';
 
 const constructorFrom = {
   'paragraph': ParagraphBlockObject.fromJson,
-  'child_page': ChildPageBlockObject.fromJson
+  'child_page': ChildPageBlockObject.fromJson,
+  'to_do': ToDoBlockObject.fromJson
 };
 
 class BlockObject {
@@ -58,10 +59,6 @@ class BlockObject {
     }
 
     return constructor(json);
-
-    // if (type == 'paragraph') {
-    //   return ParagraphBlockObject.fromJson(json);
-    // }
   }
 }
 
@@ -84,13 +81,15 @@ class ParagraphBlockObject extends BlockObject {
   final List<BlockObject> children;
 
   ParagraphBlockObject.fromJson(JsonMap json)
-      : richText = (json['rich_text'] as List)
+      : richText = (json['paragraph']['rich_text'] as List)
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
-        color = json['color'] as String,
-        children = (json['children'] as List)
-            .map((e) => BlockObject.fromJson(e))
-            .toList(),
+        color = json['paragraph']['color'] as String,
+        children = (json['children'] == null)
+            ? []
+            : (json['children'] as List)
+                .map((e) => BlockObject.fromJson(e))
+                .toList(),
         super._(json);
 }
 
@@ -167,9 +166,11 @@ class CalloutBlockObject extends BlockObject {
             .toList(),
         icon = FileOrEmojiObject.fromJson(json),
         color = json['color'] as String,
-        children = (json['children'] as List)
-            .map((e) => BlockObject.fromJson(e))
-            .toList(),
+        children = (json['children'] == null)
+            ? []
+            : (json['children'] as List)
+                .map((e) => BlockObject.fromJson(e))
+                .toList(),
         super._(json);
 }
 
@@ -189,9 +190,11 @@ class QuoteBlockObject extends BlockObject {
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
         color = json['color'] as String,
-        children = (json['children'] as List)
-            .map((e) => BlockObject.fromJson(e))
-            .toList(),
+        children = (json['children'] == null)
+            ? []
+            : (json['children'] as List)
+                .map((e) => BlockObject.fromJson(e))
+                .toList(),
         super._(json);
 }
 
@@ -211,9 +214,11 @@ class BulletedListItemBlockObject extends BlockObject {
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
         color = json['color'] as String,
-        children = (json['children'] as List)
-            .map((e) => BlockObject.fromJson(e))
-            .toList(),
+        children = (json['children'] == null)
+            ? []
+            : (json['children'] as List)
+                .map((e) => BlockObject.fromJson(e))
+                .toList(),
         super._(json);
 }
 
@@ -233,9 +238,11 @@ class NumberedListItemBlockObject extends BlockObject {
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
         color = json['color'] as String,
-        children = (json['children'] as List)
-            .map((e) => BlockObject.fromJson(e))
-            .toList(),
+        children = (json['children'] == null)
+            ? []
+            : (json['children'] as List)
+                .map((e) => BlockObject.fromJson(e))
+                .toList(),
         super._(json);
 }
 
@@ -254,14 +261,16 @@ class ToDoBlockObject extends BlockObject {
   final List<BlockObject> children;
 
   ToDoBlockObject.fromJson(JsonMap json)
-      : richTexts = (json['rich_text'] as List)
+      : richTexts = (json['to_do']['rich_text'] as List)
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
         checked = json['checked'] as bool?,
-        color = json['color'] as String,
-        children = (json['children'] as List)
-            .map((e) => BlockObject.fromJson(e))
-            .toList(),
+        color = json['to_do']['color'] as String,
+        children = (json['children'] == null)
+            ? []
+            : (json['children'] as List)
+                .map((e) => BlockObject.fromJson(e))
+                .toList(),
         super._(json);
 }
 
@@ -281,9 +290,11 @@ class ToggleBlockObject extends BlockObject {
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
         color = json['color'] as String,
-        children = (json['children'] as List)
-            .map((e) => BlockObject.fromJson(e))
-            .toList(),
+        children = (json['children'] == null)
+            ? []
+            : (json['children'] as List)
+                .map((e) => BlockObject.fromJson(e))
+                .toList(),
         super._(json);
 }
 

@@ -11,7 +11,7 @@ import '../users/user_object.dart';
 
 class RichTextObject {
   RichTextObject._(JsonMap json)
-      : plainText = json['plainText'] as String,
+      : plainText = json['plain_text'] as String,
         href = json['href'] as String?,
         annotations =
             AnnotationsObject.fromJson(json['annotations'] as JsonMap),
@@ -74,8 +74,10 @@ class TextObject extends RichTextObject {
   final LinkObject? link;
 
   TextObject.fromJson(JsonMap json)
-      : content = json['content'] as String,
-        link = LinkObject.fromJson(json['link'] as JsonMap),
+      : content = json['text']['content'] as String,
+        link = json['text']['link'] == null
+            ? null
+            : LinkObject.fromJson(json['text']['link']),
         super._(json);
 }
 
