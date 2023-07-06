@@ -22,8 +22,7 @@ void main() async {
 
     while (response!.hasMore) {
       print("There was more than one page of results.");
-      response = await client.getBlockChildren(
-          id: pageId, startCursor: response.nextCursor);
+      response = await client.getBlockChildren(id: pageId);
       // TODO: do something with the results
     }
   } on APIRequestException catch (error) {
