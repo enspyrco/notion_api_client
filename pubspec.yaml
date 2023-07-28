@@ -9,8 +9,10 @@ environment:
 dependencies:
   http: ^1.1.0
   html: ^0.15.4
-  api_client_utils: ^0.0.0-a1
+  api_client_utils:
+    git: https://github.com/enspyrco/api_client_utils
 
 dev_dependencies:
-  enspyr_lints: ^0.0.0-a1
+  enspyr_lints:
+    git: https://github.com/enspyrco/enspyr_lints
   test: ^1.24.4

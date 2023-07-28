@@ -1,6 +1,6 @@
 dependency_overrides:
-  enspyr_lints:
-    git: https://github.com/enspyrco/enspyr_lints
+  # enspyr_lints:
+  #   git: https://github.com/enspyrco/enspyr_lints
   # api_client_utils:
   #   git: https://github.com/enspyrco/api_client_utils
 
@@ -9,7 +9,7 @@ dependency_overrides:
 # dependency_overrides:
   # enspyr_lints:
   #   path: 
-  api_client_utils:
-    path: ../api_client_utils
-  json_utils:
-    git: https://github.com/enspyrco/json_utils
+  # api_client_utils:
+  #   path: ../api_client_utils
+  # json_utils:
+  #   git: https://github.com/enspyrco/json_utils

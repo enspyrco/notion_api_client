@@ -74,10 +74,10 @@ class TextObject extends RichTextObject {
   final LinkObject? link;
 
   TextObject.fromJson(JsonMap json)
-      : content = json['text']['content'] as String,
-        link = json['text']['link'] == null
+      : content = (json['text'] as JsonMap)['content'] as String,
+        link = (json['text'] as JsonMap)['link'] == null
             ? null
-            : LinkObject.fromJson(json['text']['link']),
+            : LinkObject.fromJson((json['text'] as JsonMap)['link'] as JsonMap),
         super._(json);
 }
 

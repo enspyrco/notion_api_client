@@ -82,10 +82,10 @@ class ParagraphBlockObject extends BlockObject {
   final List<BlockObject> children;
 
   ParagraphBlockObject.fromJson(JsonMap json)
-      : richText = (json['paragraph']['rich_text'] as List)
+      : richText = ((json['paragraph'] as JsonMap)['rich_text'] as List)
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
-        color = json['paragraph']['color'] as String,
+        color = (json['paragraph'] as JsonMap)['color'] as String,
         children = (json['children'] == null)
             ? []
             : (json['children'] as List)
@@ -262,11 +262,11 @@ class ToDoBlockObject extends BlockObject {
   final List<BlockObject> children;
 
   ToDoBlockObject.fromJson(JsonMap json)
-      : richTexts = (json['to_do']['rich_text'] as List)
+      : richTexts = ((json['to_do'] as JsonMap)['rich_text'] as List)
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
         checked = json['checked'] as bool?,
-        color = json['to_do']['color'] as String,
+        color = (json['to_do'] as JsonMap)['color'] as String,
         children = (json['children'] == null)
             ? []
             : (json['children'] as List)
@@ -287,10 +287,10 @@ class ToggleBlockObject extends BlockObject {
   final List<BlockObject> children;
 
   ToggleBlockObject.fromJson(JsonMap json)
-      : richTexts = (json['toggle']['rich_text'] as List)
+      : richTexts = ((json['toggle'] as JsonMap)['rich_text'] as List)
             .map((e) => RichTextObject.fromJson(e))
             .toList(),
-        color = json['toggle']['color'] as String,
+        color = (json['toggle'] as JsonMap)['color'] as String,
         children = (json['children'] == null)
             ? []
             : (json['children'] as List)
