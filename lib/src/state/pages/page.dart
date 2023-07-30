@@ -1,28 +1,20 @@
 import 'package:api_client_utils/types.dart';
 
+import '../parent.dart';
 import '../users/user_object.dart';
 
-class PageObject {
-  // *
-  // Description: Always "page".
-  // Example value: "page"
-  // wirename: object
+// https://developers.notion.com/reference/page
+class Page {
+  // Always "page".
   final String object = 'page';
 
-  // *
   // (UUIDv4)	Unique identifier of the page.
-  // "45ee8d13-687b-47ce-a5ca-6e2e45548c4b"
-  // wirename: id
   final String id;
 
-  // Description: Date and time when this page was created. Formatted as an ISO 8601 date time string.
-  // Example value: "2020-03-17T19:10:04.968Z"
-  // wirename: created_time
-  // Type: String encoded (ISO 8601 date and time)
+  // Date and time when this page was created. Formatted as an ISO 8601 date time string.
   final String createdTime;
 
-  // 	Partial User	User who created the page.	{"object": "user","id": "45ee8d13-687b-47ce-a5ca-6e2e45548c4b"}
-  // wirename: created_by
+  // User who created the page.
   final UserObject createdBy;
 
   // last_edited _time	string (ISO 8601 date and time)	Date and time when this page was updated. Formatted as an ISO 8601 date time string.	"2020-03-17T19:10:04.968Z"
@@ -45,21 +37,18 @@ class PageObject {
   // Type: object
   final JsonMap properties;
 
-  // Description:
-  //   - The parent of this page. Can be a database, page, or workspace.
-  //   - Parent types are defined below.
-  // Type: object
-  final ParentObject parent;
+  // The parent of this page. Can be a database, page, or workspace.
+  final Parent parent;
 
-  // url	string	The URL of the Notion page.	"https://www.notion.so/Avocado-d093f1d200464ce78b36e58a3f0d8043"
+  // The URL of the Notion page.
   final String url;
 
-  PageObject.fromJson(JsonMap json)
+  Page.fromJson(JsonMap json)
       : id = json['id'] as String,
         createdTime = json['created_time'] as String,
         createdBy = UserObject.fromJson(json['created_by'] as JsonMap),
         properties = json['properties'] as JsonMap,
-        parent = ParentObject.fromJson(json['parent'] as JsonMap),
+        parent = Parent.fromJson(json['parent'] as JsonMap),
         url = json['url'] as String;
 }
 
@@ -82,17 +71,3 @@ class PageObject {
 //   - Property	Type	Description	Example values
 //   - type	string	Always "workspace".	"workspace"
 //   - workspace	boolean	Always true.	true
-class ParentObject {
-  // ParentObject._(this._type, this._id, this._workspace);
-
-  final String type;
-  final String id;
-  final bool workspace;
-
-  ParentObject.fromJson(JsonMap json)
-      : type = json['type'] as String,
-        id = (json['database_id'] as String?) ??
-            (json['page_id'] as String?) ??
-            '',
-        workspace = json['workspace'] as bool? ?? false;
-}
