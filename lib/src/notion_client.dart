@@ -2,9 +2,9 @@ import 'package:api_client_utils/api_client_utils.dart';
 import 'package:api_client_utils/types.dart';
 import 'package:http/http.dart' as http;
 import 'package:notion_api_client/src/pageable.dart';
-import 'package:notion_api_client/src/state/pages/page_object.dart';
 
 import 'state/blocks/block_object.dart';
+import 'state/pages/page.dart';
 
 class NotionClient {
   static const _host = 'api.notion.com';
@@ -19,9 +19,9 @@ class NotionClient {
   }
 
   /// "GET" or "POST", "HEAD", "PUT", or "DELETE"
-  Future<PageObject> getPageProperties({required String id}) async {
+  Future<Page> getPageProperties({required String id}) async {
     var json = await _requester.request('GET', 'pages/$id');
-    return PageObject.fromJson(json as JsonMap);
+    return Page.fromJson(json as JsonMap);
   }
 
   Future<PageableResponse?> getBlockChildren(
@@ -53,6 +53,25 @@ class NotionClient {
   Future<Object?> getPageContent({required String id}) async {
     var json = await _requester.request('GET', 'pages/$id');
     return json;
+  }
+
+  /// Recursively calls [getBlockChildren] until the reponse's hasMore member
+  /// is false, collecting all results then returning the collection.
+  Future<List<Object?>?> getAllBlockChildren({required String id}) async {
+    PageableResponse? response =
+        await getBlockChildren(id: id, recursive: true);
+
+    if (response == null) return null;
+
+    final results = [...response.results];
+
+    while (response!.hasMore) {
+      response = await getBlockChildren(id: id, recursive: true);
+      if (response == null) break;
+      results.addAll(response.results);
+    }
+
+    return results;
   }
 
   void close() => _client.close();

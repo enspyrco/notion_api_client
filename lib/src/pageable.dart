@@ -1,7 +1,7 @@
 import 'package:api_client_utils/types.dart';
 
 import 'state/blocks/block_object.dart';
-import 'state/pages/page_object.dart';
+import 'state/pages/page.dart';
 import 'state/users/user_object.dart';
 
 /// Each paginated endpoint accepts the following request parameters:
@@ -66,7 +66,7 @@ class PageableResponse {
 
 const Map<String, Object? Function(JsonMap)> fromJsonFor = {
   'block': BlockObject.fromJson,
-  'page': PageObject.fromJson,
+  'page': Page.fromJson,
   'user': UserObject.fromJson,
   // 'database': DatabaseObject.fromJson,
   // 'page_or_database' : ,

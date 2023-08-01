@@ -1,6 +1,5 @@
 import 'package:api_client_utils/api_client_utils.dart';
 import 'package:notion_api_client/notion_api_client.dart';
-import 'package:notion_api_client/src/pageable.dart';
 
 import 'credentials.dart';
 
@@ -10,21 +9,13 @@ void main() async {
   var client = NotionClient(token: token);
 
   try {
-    PageableResponse? response =
-        await client.getBlockChildren(id: pageId, recursive: true);
+    final List<Object?>? pageBlocks =
+        await client.getAllBlockChildren(id: pageId);
 
-    if (response == null) {
-      print('There was nothing returned!');
-      return;
-    }
+    if (pageBlocks == null) throw 'returned null, sort your shit out';
 
-    // TODO: do something with the results
-    print(response.results);
-
-    while (response!.hasMore) {
-      print("There was more than one page of results.");
-      response = await client.getBlockChildren(id: pageId, recursive: true);
-      // TODO: do something with the results
+    for (Object? block in pageBlocks) {
+      print(block);
     }
   } on APIRequestException catch (error) {
     print(error.getJsonValue(key: 'message'));
