@@ -1,4 +1,4 @@
-const pageObjectTestData = '''
+const examplePageJsonString = '''
 {
     "object": "page",
     "id": "be633bf1-dfa0-436d-b259-571129a590e5",
@@ -65,6 +65,7 @@ const pageObjectTestData = '''
             ]
         }
     },
-    "url": "https://www.notion.so/Bug-bash-be633bf1dfa0436db259571129a590e5"
+    "url": "https://www.notion.so/Bug-bash-be633bf1dfa0436db259571129a590e5",
+		"public_url": "https://jm-testing.notion.site/p1-6df2c07bfc6b4c46815ad205d132e22d"
 }
 ''';

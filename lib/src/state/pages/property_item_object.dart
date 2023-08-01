@@ -16,7 +16,7 @@ class PropertyItemObject {
         type = json['type'] as String,
         nextUrl = json['next_url'] as String?;
 
-  /// object	"property_item"	Always "property_item".	"property_item"
+  /// Always "property_item".
   final String object = 'property_item';
 
   /// Underlying identifier for the property. This identifier is guaranteed to

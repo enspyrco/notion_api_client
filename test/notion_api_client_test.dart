@@ -6,7 +6,7 @@ import 'package:http/testing.dart';
 import 'package:notion_api_client/notion_api_client.dart';
 import 'package:test/test.dart';
 
-import 'data/page_object.dart';
+import 'data/models/page_example.dart';
 
 void main() {
   group('Smoke tests >', () {
@@ -17,7 +17,7 @@ void main() {
     test('NotionClient takes a http.Client and uses it to call an endpoint',
         () async {
       final bodyController = StreamController<List<int>>();
-      bodyController.add(Utf8Encoder().convert(pageObjectTestData));
+      bodyController.add(Utf8Encoder().convert(examplePageJsonString));
       bodyController.close();
       var response = StreamedResponse(bodyController.stream, 200,
           headers: {'content-type': 'application/json'});

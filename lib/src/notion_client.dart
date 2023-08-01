@@ -55,22 +55,23 @@ class NotionClient {
     return json;
   }
 
-  /// will throw APIRequestException if ...
-  Future<List<Object>?> func(String pageId) async {
+  /// Recursively calls [getBlockChildren] until the reponse's hasMore member
+  /// is false, collecting all results then returning the collection.
+  Future<List<Object?>?> getAllBlockChildren({required String id}) async {
     PageableResponse? response =
-        await getBlockChildren(id: pageId, recursive: true);
+        await getBlockChildren(id: id, recursive: true);
 
     if (response == null) return null;
 
-    final results = <Object>[];
+    final results = [...response.results];
 
     while (response!.hasMore) {
-      print("There was more than one page of results.");
-      response = await getBlockChildren(id: pageId, recursive: true);
-      // TODO: do something with the results
+      response = await getBlockChildren(id: id, recursive: true);
+      if (response == null) break;
+      results.addAll(response.results);
     }
 
-    return null;
+    return results;
   }
 
   void close() => _client.close();

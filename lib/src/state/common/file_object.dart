@@ -12,6 +12,7 @@ const fromJsonFor = {
 
 /// Each file object contains the following keys. In addition, it must contain a key corresponding with the value of type. The value is an object containing type-specific configuration. The type-specific configurations are described in the sections below.
 
+/// https://developers.notion.com/reference/file-object
 class FileObject implements FileOrEmojiObject {
   FileObject._(JsonMap json) : type = json['type'] as String;
 

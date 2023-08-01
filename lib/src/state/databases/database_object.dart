@@ -4,6 +4,7 @@ import 'package:notion_api_client/src/state/common/file_or_emoji_object.dart';
 import 'package:notion_api_client/src/state/common/rich_text_object.dart';
 import 'package:notion_api_client/src/state/databases/property_object.dart';
 
+import '../parent.dart';
 import '../users/user_object.dart';
 
 /// Database objects describe the property schema of a database in Notion. Pages are the items (or children) in a database. Page property values must conform to the property objects laid out in the parent database object.
@@ -71,42 +72,4 @@ class DatabaseObject {
 
   /// archived	boolean	The archived status of the database.	false
   final bool archived;
-}
-
-abstract class PageOrWorkspaceParent {
-  abstract final String type;
-
-  factory PageOrWorkspaceParent.fromJson(JsonMap json) {
-    return (json['type'] == 'page')
-        ? PageParent.fromJson(json)
-        : WorkspaceParent.fromJson(json);
-  }
-}
-
-/// Page parent
-/// The parent property is an object containing the following keys:
-class PageParent implements PageOrWorkspaceParent {
-  /// type	string	Always "page_id".	"page_id"
-  @override
-  final String type;
-
-  /// page_id	string (UUIDv4)	The ID of the page that this page belongs to.	"b8595b75-abd1-4cad-8dfe-f935a8ef57cb"
-  final String pageId;
-
-  PageParent.fromJson(JsonMap json)
-      : type = json['type'] as String,
-        pageId = json['page_id'] as String;
-}
-
-/// Workspace parent
-/// A page with a workspace parent is a top-level page within a Notion workspace. The parent property is an object containing the following keys:
-class WorkspaceParent implements PageOrWorkspaceParent {
-  /// type	string	Always "workspace".	"workspace"
-  @override
-  final String type;
-
-  /// workspace	boolean	Always true.	true
-  final bool workspace = true;
-
-  WorkspaceParent.fromJson(JsonMap json) : type = json['type'] as String;
 }

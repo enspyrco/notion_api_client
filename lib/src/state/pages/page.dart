@@ -1,73 +1,70 @@
 import 'package:api_client_utils/types.dart';
+import 'package:notion_api_client/src/state/common/file_or_emoji_object.dart';
 
+import '../common/file_object.dart';
 import '../parent.dart';
 import '../users/user_object.dart';
 
-// https://developers.notion.com/reference/page
-class Page {
-  // Always "page".
-  final String object = 'page';
-
-  // (UUIDv4)	Unique identifier of the page.
+/// https://developers.notion.com/reference/page
+final class Page {
+  /// Unique identifier of the page. (UUIDv4)
   final String id;
 
-  // Date and time when this page was created. Formatted as an ISO 8601 date time string.
-  final String createdTime;
+  /// Date and time when this page was created. Formatted as an ISO 8601 date time string.
+  final DateTime createdTime;
 
-  // User who created the page.
+  /// User who created the page.
   final UserObject createdBy;
 
-  // last_edited _time	string (ISO 8601 date and time)	Date and time when this page was updated. Formatted as an ISO 8601 date time string.	"2020-03-17T19:10:04.968Z"
+  /// Date and time when this page was updated.
+  final DateTime lastEditedTime;
 
-  // last_edited_by	Partial User	User who last edited the page.	{"object": "user","id": "45ee8d13-687b-47ce-a5ca-6e2e45548c4b"}
+  /// 	User who last edited the page.
+  final UserObject lastEditedBy;
 
-  // archived	boolean	The archived status of the page.	false
+  /// The archived status of the page.
+  final bool archived;
 
-  // icon	File Object (only type of "external" is supported currently) or Emoji object	Page icon.
+  /// Page icon.
+  /// (only type of "external" is supported currently) or Emoji object
+  final FileOrEmojiObject icon;
 
-  // cover	File object (only type of "external" is supported currently)	Page cover image.
+  ///	Page cover image.
+  /// (only type of "external" is supported currently)
+  final FileObject? cover;
 
-  // Description: Property values of this page.
-  //   - If parent.type is "page_id" or "workspace", then the only valid key is title.
-  //   - If parent.type is "database_id", then the keys and values of this field are determined by the properties of the database this page belongs to.
-  //   - key string
-  //     - Name of a property as it appears in Notion.
-  //   - value object
-  //     - See Property value object.
-  // Type: object
+  /// Description: Property values of this page.
+  ///   - If parent.type is "page_id" or "workspace", then the only valid key is title.
+  ///   - If parent.type is "database_id", then the keys and values of this field are determined by the properties of the database this page belongs to.
+  ///   - key string
+  ///     - Name of a property as it appears in Notion.
+  ///   - value object
+  ///     - See Property value object.
+  /// Type: object
   final JsonMap properties;
 
-  // The parent of this page. Can be a database, page, or workspace.
+  /// The parent of this page. Can be a database, page, or workspace.
   final Parent parent;
 
-  // The URL of the Notion page.
-  final String url;
+  /// The URL of the Notion page.
+  final Uri url;
+
+  /// The public page URL if the page has been published to the web. Otherwise, null.
+  final Uri publicUrl;
 
   Page.fromJson(JsonMap json)
       : id = json['id'] as String,
-        createdTime = json['created_time'] as String,
+        createdTime = DateTime.parse(json['created_time'] as String),
         createdBy = UserObject.fromJson(json['created_by'] as JsonMap),
+        lastEditedTime = DateTime.parse(json['last_edited_time'] as String),
+        lastEditedBy = UserObject.fromJson(json['last_edited_by'] as JsonMap),
+        archived = json['false'] as bool? ?? false,
+        icon = FileOrEmojiObject.fromJson(json['icon'] as JsonMap),
+        cover = json['cover'] == null
+            ? null
+            : FileObject.fromJson(json['cover'] as JsonMap),
         properties = json['properties'] as JsonMap,
         parent = Parent.fromJson(json['parent'] as JsonMap),
-        url = json['url'] as String;
+        url = Uri.parse(json['url'] as String),
+        publicUrl = Uri.parse(json['public_url'] as String);
 }
-
-// The following documentation is taken from https://developers.notion.com/reference/page:
-
-// Database parent
-// The parent property is an object containing the following keys:
-//   - Property	Type	Description	Example values
-//   - type	string	Always "database_id".	"database_id"
-//   - database_id	string (UUIDv4)	The ID of the database that this page belongs to.	"b8595b75-abd1-4cad-8dfe-f935a8ef57cb"
-
-// Page parent
-// The parent property is an object containing the following keys:
-//   - Property	Type	Description	Example values
-//   - type	string	Always "page_id".	"page_id"
-//   - page_id	string (UUIDv4)	The ID of the page that this page belongs to.	"b8595b75-abd1-4cad-8dfe-f935a8ef57cb"
-
-// Workspace parent
-// A page with a workspace parent is a top-level page within a Notion workspace. The parent property is an object containing the following keys:
-//   - Property	Type	Description	Example values
-//   - type	string	Always "workspace".	"workspace"
-//   - workspace	boolean	Always true.	true
