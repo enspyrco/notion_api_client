@@ -5,8 +5,8 @@ import 'package:notion_api_client/src/exceptions.dart';
 /// contains a key corresponding with the value of type. The value is an object
 /// containing type-specific data. The type-specific data are described in the
 /// sections below.
-class PropertyValueObject {
-  PropertyValueObject._(JsonMap json) : id = json['id'] as String;
+class PropertyValue {
+  PropertyValue._(JsonMap json) : id = json['id'] as String;
 
   /// id	string	Underlying identifier for the property. This identifier is guaranteed to remain constant when the property name changes. It may be a UUID, but is often a short random string.
   /// The id may be used in place of name when creating or updating pages.	"f%5C%5C%3Ap"
@@ -17,9 +17,9 @@ class PropertyValueObject {
   /// "relation", "rollup", "title", "people", "files", "checkbox", "url",
   /// "email", "phone_number", "created_time", "created_by", "last_edited_time",
   /// and "last_edited_by".	"rich_text"
-  factory PropertyValueObject.fromJson(JsonMap json) {
+  factory PropertyValue.fromJson(JsonMap json) {
     if (json['type'] == 'date') {
-      return DatePropertyValueObject.fromJson(json);
+      return DatePropertyValue.fromJson(json);
     }
     throw UnrecognizedTypeInJsonException(
         'PropertyValueObject.fromJson', json['type'], json);
@@ -27,7 +27,7 @@ class PropertyValueObject {
 }
 
 /// Date property value objects contain the following data within the date property
-class DatePropertyValueObject extends PropertyValueObject {
+class DatePropertyValue extends PropertyValue {
   /// start	string (ISO 8601 date and time)	An ISO 8601 format date, with optional time.	"2020-12-08T12:00:00Z"
   final String start;
 
@@ -40,7 +40,7 @@ class DatePropertyValueObject extends PropertyValueObject {
   /// If null, time zone information will be contained in UTC offsets in start and end.	"America/Los_Angeles"
   final String? timeZone;
 
-  DatePropertyValueObject.fromJson(JsonMap json)
+  DatePropertyValue.fromJson(JsonMap json)
       : start = json['start'] as String,
         end = json['end'] as String?,
         timeZone = json['time_zone'] as String?,

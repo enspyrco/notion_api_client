@@ -10,8 +10,8 @@ import 'package:notion_api_client/src/state/common/rich_text_object.dart';
 /// In addition,it will contain a key corresponding with the value of type.
 /// The value is an object containing type-specific data. The type-specific
 /// data are described in the sections below.
-class PropertyItemObject {
-  PropertyItemObject._(JsonMap json)
+class PropertyItem {
+  PropertyItem._(JsonMap json)
       : id = json['id'] as String,
         type = json['type'] as String,
         nextUrl = json['next_url'] as String?;
@@ -45,7 +45,7 @@ class PropertyItemObject {
   /// The value is an object containing type-specific data. The type-specific
   /// data are described in the sections below.
 
-  factory PropertyItemObject.fromJson(JsonMap json) {
+  factory PropertyItem.fromJson(JsonMap json) {
     var type = json['type'] as String?;
 
     if (type == 'title') {
@@ -63,10 +63,9 @@ class PropertyItemObject {
 class PageablePropertyItemsObject {
   PageablePropertyItemsObject._(JsonMap json)
       : results = (json['results'] as List? ?? [])
-            .map((e) => PropertyItemObject.fromJson(e as JsonMap))
+            .map((e) => PropertyItem.fromJson(e as JsonMap))
             .toList(),
-        propertyItem =
-            PropertyItemObject.fromJson(json['property_item'] as JsonMap);
+        propertyItem = PropertyItem.fromJson(json['property_item'] as JsonMap);
 
   /// Always "list".
   final String object = 'list';
@@ -76,11 +75,11 @@ class PageablePropertyItemsObject {
 
   /// List of property_item objects.
   /// Example: [{"object": "property_item", "id": "vYdV", "type": "relation", "relation": { "id": "535c3fb2-95e6-4b37-a696-036e5eac5cf6"}}... ]
-  final List<PropertyItemObject> results;
+  final List<PropertyItem> results;
 
   /// A property_item object that describes the property.	{"id": "title", "next_url": null, "type": "title", "title": {}}
   /// Wirename: property_item
-  final PropertyItemObject propertyItem;
+  final PropertyItem propertyItem;
 }
 
 /// Note: The descriptions below sound like a different structure to the json shown in the docs:
@@ -94,7 +93,7 @@ class PageablePropertyItemsObject {
 /// Title property value objects contain an array of rich text objects within
 /// the title property.
 ///   Note: returned as a paginated list object of individual property_item objects in the results.
-class TitlePropertyItemObject extends PropertyItemObject {
+class TitlePropertyItemObject extends PropertyItem {
   final RichTextObject title;
 
   TitlePropertyItemObject.fromJson(JsonMap json)
@@ -104,7 +103,7 @@ class TitlePropertyItemObject extends PropertyItemObject {
 
 /// Rich Text property value objects contain an array of rich text objects within the rich_text property.
 ///   Note: returned as a paginated list object of individual property_item objects in the results.
-class RichTextPropertyItemObject extends PropertyItemObject {
+class RichTextPropertyItemObject extends PropertyItem {
   /// Wirename: rich_text
   final RichTextObject richText;
 
@@ -114,7 +113,7 @@ class RichTextPropertyItemObject extends PropertyItemObject {
 }
 
 /// Number property value objects contain a number within the number property.
-class NumberPropertyItemObject extends PropertyItemObject {
+class NumberPropertyItemObject extends PropertyItem {
   final num number;
 
   NumberPropertyItemObject.fromJson(JsonMap json)
@@ -123,7 +122,7 @@ class NumberPropertyItemObject extends PropertyItemObject {
 }
 
 /// Select property value objects contain the following data within the select property:
-class SelectPropertyItemObject extends PropertyItemObject {
+class SelectPropertyItemObject extends PropertyItem {
   /// ID of the option.
   /// When updating a select property, you can use either name or id.
   ///   Example: "b3d773ca-b2c9-47d8-ae98-3c2ce3b2bffb"
@@ -151,7 +150,7 @@ class SelectPropertyItemObject extends PropertyItemObject {
 }
 
 /// Multi-select property value objects contain an array of multi-select option values within the multi_select property.
-class MultiSelectPropertyItemObject extends PropertyItemObject {
+class MultiSelectPropertyItemObject extends PropertyItem {
   final List<SelectPropertyItemObject> selections;
 
   MultiSelectPropertyItemObject.fromJson(JsonMap json)
@@ -183,7 +182,7 @@ class MultiSelectPropertyItemObject extends PropertyItemObject {
 }
 
 /// Date property value objects contain the following data within the date property:
-class DatePropertyItemObject extends PropertyItemObject {
+class DatePropertyItemObject extends PropertyItem {
   /// An ISO 8601 format date, with optional time.	"2020-12-08T12:00:00Z"
   ///   Type: string (ISO 8601 date and time)
   final String start;

@@ -1,6 +1,6 @@
 import 'package:api_client_utils/types.dart';
 import 'package:notion_api_client/src/exceptions.dart';
-import 'package:notion_api_client/src/state/pages/property_value_object.dart';
+import 'package:notion_api_client/src/state/pages/property_value.dart';
 
 import '../users/user_object.dart';
 
@@ -138,9 +138,9 @@ class DatabaseReference {
 // Date mentions
 // Date mentions contain a date property value object within the date property.
 class DateMentionObject extends MentionObject {
-  final DatePropertyValueObject date;
+  final DatePropertyValue date;
   DateMentionObject.fromJson(JsonMap json)
-      : date = DatePropertyValueObject.fromJson(json['date'] as JsonMap),
+      : date = DatePropertyValue.fromJson(json['date'] as JsonMap),
         super._(json);
 }
 
