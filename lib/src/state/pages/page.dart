@@ -4,6 +4,7 @@ import 'package:notion_api_client/src/state/common/file_or_emoji_object.dart';
 import '../common/file_object.dart';
 import '../parent.dart';
 import '../users/user_object.dart';
+import 'page_property.dart';
 
 /// https://developers.notion.com/reference/page
 final class Page {
@@ -33,15 +34,14 @@ final class Page {
   /// (only type of "external" is supported currently)
   final FileObject? cover;
 
-  /// Description: Property values of this page.
-  ///   - If parent.type is "page_id" or "workspace", then the only valid key is title.
-  ///   - If parent.type is "database_id", then the keys and values of this field are determined by the properties of the database this page belongs to.
-  ///   - key string
-  ///     - Name of a property as it appears in Notion.
-  ///   - value object
-  ///     - See Property value object.
-  /// Type: object
-  final JsonMap properties;
+  /// Property values of this page. As of version 2022-06-28, properties only contains the ID of the property; in prior versions properties contained the values as well.
+  /// If parent.type is "page_id" or "workspace", then the only valid key is title.
+  /// If parent.type is "database_id", then the keys and values of this field are determined by the properties of the database this page belongs to.
+  /// key string
+  ///  Name of a property as it appears in Notion.
+  /// value object
+  ///  See Property value object.
+  final Map<String, PageProperty> properties;
 
   /// The parent of this page. Can be a database, page, or workspace.
   final Parent parent;
@@ -63,7 +63,10 @@ final class Page {
         cover = json['cover'] == null
             ? null
             : FileObject.fromJson(json['cover'] as JsonMap),
-        properties = json['properties'] as JsonMap,
+        properties = Map.fromEntries((json['properties'] as JsonMap)
+            .entries
+            .map((MapEntry<String, Object?> e) =>
+                MapEntry(e.key, PageProperty.fromJson(e.value as JsonMap)))),
         parent = Parent.fromJson(json['parent'] as JsonMap),
         url = Uri.parse(json['url'] as String),
         publicUrl = Uri.parse(json['public_url'] as String);

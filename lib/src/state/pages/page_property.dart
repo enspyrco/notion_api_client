@@ -1,6 +1,58 @@
 import 'package:api_client_utils/types.dart';
 import 'package:notion_api_client/src/exceptions.dart';
-import 'package:notion_api_client/src/state/common/rich_text_object.dart';
+
+import '../common/rich_text_object.dart';
+
+/// https://developers.notion.com/reference/page-property-values
+
+/// If a page is not part of a database, then its only available property is its title.
+
+/// A page object is made up of page properties that contain data about the page.
+/// When you send a request to Create a page, you set the page properties in the properties object body param.
+/// Retrieve a page gets the identifier, type, and value of a page’s properties. Retrieve a page property item returns information about a single property ID.
+/// An Update page query modifies the page property values specified in the properties object body param.
+class PageProperty {
+  PageProperty._(JsonMap json) : id = json['id'] as String;
+
+  /// An underlying identifier for the property.
+  /// id may be used in place of name when creating or updating pages.
+  /// id remains constant when the property name changes.
+  final String id;
+
+  /// type (optional)	string (enum)	Type of the property. Possible values are
+  /// "rich_text", "number", "select", "multi_select", "date", "formula",
+  /// "relation", "rollup", "title", "people", "files", "checkbox", "url",
+  /// "email", "phone_number", "created_time", "created_by", "last_edited_time",
+  /// and "last_edited_by".	"rich_text"
+  factory PageProperty.fromJson(JsonMap json) {
+    if (json['type'] == 'date') {
+      return DateProperty.fromJson(json);
+    }
+    throw UnrecognizedTypeInJsonException(
+        'PropertyValueObject.fromJson', json['type'], json);
+  }
+}
+
+/// Date property value objects contain the following data within the date property
+class DateProperty extends PageProperty {
+  /// start	string (ISO 8601 date and time)	An ISO 8601 format date, with optional time.	"2020-12-08T12:00:00Z"
+  final String start;
+
+  /// end	string (optional, ISO 8601 date and time)	An ISO 8601 formatted date, with optional time. Represents the end of a date range.
+  /// If null, this property's date value is not a range.	"2020-12-08T12:00:00Z"
+  final String? end;
+
+  /// time_zone	string (optional, enum)	Time zone information for start and end. Possible values are extracted from the IANA database and they are based on the time zones from Moment.js.
+  /// When time zone is provided, start and end should not have any UTC offset. In addition, when time zone is provided, start and end cannot be dates without time information.
+  /// If null, time zone information will be contained in UTC offsets in start and end.	"America/Los_Angeles"
+  final String? timeZone;
+
+  DateProperty.fromJson(JsonMap json)
+      : start = json['start'] as String,
+        end = json['end'] as String?,
+        timeZone = json['time_zone'] as String?,
+        super._(json);
+}
 
 /// A property_item object describes the identifier, type, and value of a page
 /// property. It's returned from the "Retrieve a page property item" endpoint
