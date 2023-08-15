@@ -3,7 +3,7 @@ import 'package:api_client_utils/types.dart';
 import 'package:http/http.dart' as http;
 import 'package:notion_api_client/src/pageable.dart';
 
-import 'state/blocks/block_object.dart';
+import 'state/blocks/block.dart';
 import 'state/pages/page.dart';
 
 class NotionClient {
@@ -31,15 +31,14 @@ class NotionClient {
 
     if (recursive) {
       for (Object? object in response.results) {
-        if (object is BlockObject && object.hasChildren) {
-          final children = (object as dynamic).children as List<BlockObject?>;
+        if (object is Block && object.hasChildren) {
+          final children = (object as dynamic).children as List<Block?>;
           if (children.isEmpty) {
             PageableResponse? response =
                 await getBlockChildren(id: object.id, recursive: true);
 
             if (response != null) {
-              final retrievedChildren =
-                  List<BlockObject>.from(response.results);
+              final retrievedChildren = List<Block>.from(response.results);
               children.addAll(retrievedChildren);
             }
           }

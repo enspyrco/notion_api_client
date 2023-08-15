@@ -1,5 +1,7 @@
 import 'package:api_client_utils/types.dart';
 
+import '../exceptions.dart';
+
 /// https://developers.notion.com/reference/parent-object
 
 /// We make an ADT by having a Parent class as a sealed class
@@ -7,47 +9,44 @@ import 'package:api_client_utils/types.dart';
 /// believe all useful information about the type of the "parent" object, and
 /// the relationship between the types, has been captured and the only useful
 /// value is the id.
-class Parent {
+sealed class Parent {
+  const Parent({required this.id});
+
   final String id;
 
-  Parent.fromJson(JsonMap json)
-      : id = (json['database_id'] as String?) ??
-            (json['page_id'] as String?) ??
-            '';
+  factory Parent.fromJson(JsonMap json) {
+    return switch (json['type']) {
+      'database_id' => DatabaseParent.fromJson(json['database_id'] as String),
+      'page_id' => PageParent.fromJson(json['page_id'] as String),
+      _ => throw UnrecognizedTypeInJsonException(
+          'Parent.fromJson', json['type'], json)
+    };
+  }
 }
 
 /// Database parent
-class DatabaseParent implements Parent {
-  /// The ID of the database that this page belongs to.
-  @override
-  final String id;
-
-  DatabaseParent.fromJson(JsonMap json) : id = json['database_id'] as String;
+/// The ID of the database that this page belongs to.
+class DatabaseParent extends Parent {
+  DatabaseParent.fromJson(String json) : super(id: json);
 }
 
-abstract class PageOrWorkspaceParent implements Parent {
+abstract class PageOrWorkspaceParent extends Parent {
+  PageOrWorkspaceParent({required String id}) : super(id: id);
   factory PageOrWorkspaceParent.fromJson(JsonMap json) {
     return (json['type'] == 'page')
-        ? PageParent.fromJson(json)
-        : WorkspaceParent.fromJson(json);
+        ? PageParent.fromJson(json['page_id'] as String)
+        : WorkspaceParent();
   }
 }
 
 /// Page parent
-/// The parent property is an object containing the following keys:
-class PageParent implements PageOrWorkspaceParent {
-  /// The ID of the page that this page belongs to.	"b8595b75-abd1-4cad-8dfe-f935a8ef57cb"
-  @override
-  final String id;
-
-  PageParent.fromJson(JsonMap json) : id = json['page_id'] as String;
+/// The ID of the page that this page belongs to.
+class PageParent extends PageOrWorkspaceParent {
+  PageParent.fromJson(String json) : super(id: json);
 }
 
 /// Workspace parent
 /// A page with a workspace parent is a top-level page within a Notion workspace. The parent property is an object containing the following keys:
-class WorkspaceParent implements PageOrWorkspaceParent {
-  @override
-  String get id => '';
-
-  WorkspaceParent.fromJson(JsonMap json);
+class WorkspaceParent extends PageOrWorkspaceParent {
+  WorkspaceParent() : super(id: '');
 }

@@ -1,12 +1,16 @@
 import 'package:api_client_utils/types.dart';
 
-import '../../exceptions.dart';
+import '../../../exceptions.dart';
 
-/// Metadata that controls how a database property behaves.
+/// All database objects include a child properties object, composed of individual
+/// database property objects.
 ///
-/// Each database property object contains the following keys. In addition, it must contain a key corresponding with the value of type. The value is an object containing type-specific configuration. The type-specific configurations are described in the sections below.
-class PropertyObject {
-  PropertyObject._(JsonMap json)
+/// Database property objects define the database schema and are rendered in the
+/// Notion UI as database columns.
+///
+/// Database rows are pages - to work with database rows, refer to the page property values.
+class DatabaseProperty {
+  DatabaseProperty._(JsonMap json)
       : id = json['id'] as String,
         type = json['type'] as String,
         name = json['name'] as String;
@@ -21,7 +25,7 @@ class PropertyObject {
   /// name	string	The name of the property as it appears in Notion.
   final String name;
 
-  factory PropertyObject.fromJson(JsonMap json) {
+  factory DatabaseProperty.fromJson(JsonMap json) {
     var type = json['type'];
 
     if (json['type'] == 'title') {
@@ -33,17 +37,17 @@ class PropertyObject {
 }
 
 /// Each database must have exactly one database property of type "title". This database property controls the title that appears at the top of the page when the page is opened. Title database property objects have no additional configuration within the title property.
-class TitlePropertyObject extends PropertyObject {
+class TitlePropertyObject extends DatabaseProperty {
   TitlePropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Text database property objects have no additional configuration within the rich_text property.
-class TextPropertyObject extends PropertyObject {
+class TextPropertyObject extends DatabaseProperty {
   TextPropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Number database property objects contain the following configuration within the number property:
-class NumberPropertyObject extends PropertyObject {
+class NumberPropertyObject extends DatabaseProperty {
   /// format	string (enum)	How the number is displayed in Notion. Potential values include: number, number_with_commas, percent, dollar, canadian_dollar, euro, pound, yen, ruble, rupee, won, yuan, real, lira, rupiah, franc, hong_kong_dollar, new_zealand_dollar, krona, norwegian_krone, mexican_peso, rand, new_taiwan_dollar, danish_krone, zloty, baht, forint, koruna, shekel, chilean_peso, philippine_peso, dirham, colombian_peso, riyal, ringgit, leu, argentine_peso, uruguayan_peso.	"percent"
   final String format;
 
@@ -55,7 +59,7 @@ class NumberPropertyObject extends PropertyObject {
 /// Select configuration
 
 /// Select database property objects contain the following configuration within the select property:
-class SelectPropertyObject extends PropertyObject {
+class SelectPropertyObject extends DatabaseProperty {
   /// options	array of select option objects.	Sorted list of options available for this property.
   final List<SelectOptionObject> options;
 
@@ -67,7 +71,7 @@ class SelectPropertyObject extends PropertyObject {
 }
 
 /// Select options
-class SelectOptionObject extends PropertyObject {
+class SelectOptionObject extends DatabaseProperty {
   /// name	string	Name of the option as it appears in Notion.
   /// Note: Commas (",") are not valid for select values.	"Fruit"
   final String optionName;
@@ -88,7 +92,7 @@ class SelectOptionObject extends PropertyObject {
 /// Multi-select configuration
 
 /// Multi-select database property objects contain the following configuration within the multi_select property:
-class MultiSelectPropertyObject extends PropertyObject {
+class MultiSelectPropertyObject extends DatabaseProperty {
   /// options	array of multi-select option objects.	Settings for multi select properties.
   final List<MultiSelectOptionObject> options;
 
@@ -100,7 +104,7 @@ class MultiSelectPropertyObject extends PropertyObject {
 }
 
 /// Multi-select options
-class MultiSelectOptionObject extends PropertyObject {
+class MultiSelectOptionObject extends DatabaseProperty {
   /// name	string	Name of the option as it appears in Notion.
   /// Note: Commas (",") are not valid for select values.	"Fruit"
   @override
@@ -122,49 +126,49 @@ class MultiSelectOptionObject extends PropertyObject {
 
 /// Date configuration
 /// Date database property objects have no additional configuration within the date property.'
-class DatePropertyObject extends PropertyObject {
+class DatePropertyObject extends DatabaseProperty {
   DatePropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// People configuration
 /// People database property objects have no additional configuration within the people property.
-class PeoplePropertyObject extends PropertyObject {
+class PeoplePropertyObject extends DatabaseProperty {
   PeoplePropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Files configuration
 /// Files database property objects have no additional configuration within the files property.
-class FilesPropertyObject extends PropertyObject {
+class FilesPropertyObject extends DatabaseProperty {
   FilesPropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Checkbox configuration
 /// Checkbox database property objects have no additional configuration within the checkbox property.
-class CheckboxPropertyObject extends PropertyObject {
+class CheckboxPropertyObject extends DatabaseProperty {
   CheckboxPropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// URL configuration
 /// URL database property objects have no additional configuration within the url property.
-class UrlPropertyObject extends PropertyObject {
+class UrlPropertyObject extends DatabaseProperty {
   UrlPropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Email configuration
 /// Email database property objects have no additional configuration within the email property.
-class EmailPropertyObject extends PropertyObject {
+class EmailPropertyObject extends DatabaseProperty {
   EmailPropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Phone number configuration
 /// Phone number database property objects have no additional configuration within the phone_number property.
-class PhoneNumberPropertyObject extends PropertyObject {
+class PhoneNumberPropertyObject extends DatabaseProperty {
   PhoneNumberPropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Formula configuration
 /// Formula database property objects contain the following configuration within the formula property:
-class FormulaPropertyObject extends PropertyObject {
+class FormulaPropertyObject extends DatabaseProperty {
   /// Formula to evaluate for this property. You can read more about the syntax for formulas in the help center.	"if(prop(\"In stock\"), 0, prop(\"Price\"))"
   final String expression;
 
@@ -175,7 +179,7 @@ class FormulaPropertyObject extends PropertyObject {
 
 /// Relation configuration
 /// Relation database property objects contain the following configuration within the relation property:
-class RelationPropertyObject extends PropertyObject {
+class RelationPropertyObject extends DatabaseProperty {
   /// database_id	string (UUID)	The database this relation refers to. New linked pages must belong to this database in order to be valid.	"668d797c-76fa-4934-9b05-ad288df2d136"
   final String databaseId;
 
@@ -194,7 +198,7 @@ class RelationPropertyObject extends PropertyObject {
 
 /// Rollup configuration
 /// Rollup database property objects contain the following configuration within the rollup property:
-class RollupPropertyObject extends PropertyObject {
+class RollupPropertyObject extends DatabaseProperty {
   /// relation_property_name	string	The name of the relation property this property is responsible for rolling up.	"Meals"
   final String relationPropertyName;
 
@@ -222,24 +226,24 @@ class RollupPropertyObject extends PropertyObject {
 
 /// Created time configuration
 /// Created time database property objects have no additional configuration within the created_time property.
-class CreatedTimePropertyObject extends PropertyObject {
+class CreatedTimePropertyObject extends DatabaseProperty {
   CreatedTimePropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Created by configuration
 /// Created by database property objects have no additional configuration within the created_by property.
-class CreatedByPropertyObject extends PropertyObject {
+class CreatedByPropertyObject extends DatabaseProperty {
   CreatedByPropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Last edited time configuration
 /// Last edited time database property objects have no additional configuration within the last_edited_time property.
-class LastEditedTimePropertyObject extends PropertyObject {
+class LastEditedTimePropertyObject extends DatabaseProperty {
   LastEditedTimePropertyObject.fromJson(JsonMap json) : super._(json);
 }
 
 /// Last edited by configuration
 // Last edited by database property objects have no additional configuration within the last_edited_by property.
-class LastEditedByPropertyObject extends PropertyObject {
+class LastEditedByPropertyObject extends DatabaseProperty {
   LastEditedByPropertyObject.fromJson(JsonMap json) : super._(json);
 }
